@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      home_teams: {
+      home_team: {
         type: Sequelize.INTEGER,
         allowNull: false,
         onUpdate: 'CASCADE',
@@ -19,10 +19,10 @@ module.exports = {
           key: 'id',
         },
       },
-      away_team_goals: {
+      home_team_goals: {
         type: Sequelize.INTEGER,
       },
-      away_teams: {
+      away_team: {
         type: Sequelize.INTEGER,
         allowNull: false,
         onUpdate: 'CASCADE',
@@ -33,7 +33,7 @@ module.exports = {
           key: 'id',
         },
       },
-      home_team_goals: {
+      away_team_goals: {
         type: Sequelize.INTEGER,
       },
       in_progress: {
