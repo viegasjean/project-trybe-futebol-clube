@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        field: 'home_teams',
+        field: 'home_team',
         references: {
           model: 'teams',
           key: 'id',
@@ -27,7 +27,7 @@ module.exports = {
         allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        field: 'away_teams',
+        field: 'away_team',
         references: {
           model: 'teams',
           key: 'id',
