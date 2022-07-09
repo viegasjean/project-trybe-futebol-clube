@@ -19,7 +19,7 @@ interface Login {
 }
 
 export interface IUserService {
-  login(data: Login): Promise<string>;
+  login(data: Login): Promise<{ token: string }>;
 }
 
 export default class UserService implements IUserService {
@@ -27,9 +27,12 @@ export default class UserService implements IUserService {
     this.userRepository = userRepository;
   }
 
-  async login(data: Login): Promise<string> {
+  async login(data: Login): Promise<{ token: string }> {
     const { username, password } = data;
-    if (!username || !password) throw new HttpException(400, 'All fields must be filled');
+    if (!username || !password) {
+      throw new HttpException(400, 'All fields must be filled');
+    }
+
     const user = await this.userRepository.findOne(data);
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
@@ -37,6 +40,6 @@ export default class UserService implements IUserService {
     }
 
     const token = jwt.sign(data, secret, { expiresIn: '7d', algorithm: 'HS256' });
-    return token;
+    return { token };
   }
 }
