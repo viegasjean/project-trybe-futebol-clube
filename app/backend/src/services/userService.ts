@@ -3,7 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { IUserRepository } from '../repositories/UserRepository';
 import HttpException from '../exceptions/HttpException';
 
-const secret = 'senhasupersecreta';
+const secret = 'jwt_secret';
 
 // interface User {
 //   id?: number;
@@ -14,7 +14,7 @@ const secret = 'senhasupersecreta';
 // }
 
 interface Login {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -28,8 +28,8 @@ export default class UserService implements IUserService {
   }
 
   async login(data: Login): Promise<{ token: string }> {
-    const { username, password } = data;
-    if (!username || !password) {
+    const { email, password } = data;
+    if (!email || !password) {
       throw new HttpException(400, 'All fields must be filled');
     }
 
@@ -39,7 +39,10 @@ export default class UserService implements IUserService {
       throw new HttpException(401, 'Incorrect email or password');
     }
 
-    const token = jwt.sign(data, secret, { expiresIn: '7d', algorithm: 'HS256' });
+    const { id, role } = user;
+
+    const token = jwt.sign({ id, role }, secret);
+
     return { token };
   }
 }

@@ -9,7 +9,7 @@ interface User {
 }
 
 interface Login {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -23,7 +23,7 @@ export default class UserRepository implements IUserRepository {
   }
 
   async findOne(data: Login): Promise<User> {
-    const entity = await this.userModel.findOne({ where: { username: data.username } });
+    const entity = await this.userModel.findOne({ where: { email: data.email } });
 
     return entity as User;
   }
