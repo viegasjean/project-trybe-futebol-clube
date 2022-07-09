@@ -26,6 +26,8 @@ export default class UserService implements IUserService {
   }
 
   async login(data: Login): Promise<string> {
+    const { username, password } = data;
+    if (!username || !password) throw new Error('All fields must be filled');
     const token = jwt.sign(data, secret, { expiresIn: '7d', algorithm: 'HS256' });
     const user = await this.userRepository
       .findOne(data);
