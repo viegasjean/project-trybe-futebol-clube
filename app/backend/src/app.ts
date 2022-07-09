@@ -44,7 +44,7 @@ class App {
       _req: express.Request,
       res: express.Response,
       _next: express.NextFunction,
-    ) => res.status(500).json({ err: err.message }));
+    ) => res.status(500).json({ message: err.message }));
   }
 
   public start(PORT: string | number):void {
