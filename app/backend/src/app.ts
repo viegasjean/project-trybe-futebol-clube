@@ -2,6 +2,7 @@ import * as express from 'express';
 import UserController from './controllers/UserController';
 import UserService from './services/userService';
 import UserRepository from './repositories/UserRepository';
+import HttpException from './exceptions/HttpException';
 
 const userFactory = () => {
   const repository = new UserRepository();
@@ -19,6 +20,10 @@ class App {
 
     this.config();
 
+    this.login();
+
+    this.errorHandler();
+
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
   }
@@ -33,18 +38,23 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+  }
 
-    this.app.get('/login', (req, res) => res.status(200).json({ message: 'asdf' }));
+  private login() {
     this.app.post('/login', (req, res, next) => {
       userFactory().login(req, res, next);
     });
+  }
 
+  private errorHandler() {
     this.app.use((
-      err: Error,
+      err: HttpException,
       _req: express.Request,
       res: express.Response,
       _next: express.NextFunction,
-    ) => res.status(500).json({ message: err.message }));
+    ) => {
+      res.status(err.status || 500).json({ message: err.message });
+    });
   }
 
   public start(PORT: string | number):void {
