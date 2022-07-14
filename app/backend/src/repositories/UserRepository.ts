@@ -8,13 +8,9 @@ interface User {
   password: string;
 }
 
-interface Login {
-  email: string;
-  password: string;
-}
-
 export interface IUserRepository {
-  findOne(data: Login): Promise<User>;
+  findOneByEmail(email: string): Promise<User>;
+  findOneById(id: string): Promise<User>;
 }
 
 export default class UserRepository implements IUserRepository {
@@ -22,8 +18,14 @@ export default class UserRepository implements IUserRepository {
     this.userModel = userModel;
   }
 
-  async findOne(data: Login): Promise<User> {
-    const entity = await this.userModel.findOne({ where: { email: data.email } });
+  async findOneByEmail(email: string): Promise<User> {
+    const entity = await this.userModel.findOne({ where: { email } });
+
+    return entity as User;
+  }
+
+  async findOneById(id: string): Promise<User> {
+    const entity = await this.userModel.findOne({ where: { id } });
 
     return entity as User;
   }

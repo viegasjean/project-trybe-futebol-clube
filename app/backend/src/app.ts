@@ -22,6 +22,8 @@ class App {
 
     this.login();
 
+    this.validate();
+
     this.errorHandler();
 
     // Não remover essa rota
@@ -43,6 +45,12 @@ class App {
   private login() {
     this.app.post('/login', (req, res, next) => {
       userFactory().login(req, res, next);
+    });
+  }
+
+  private validate() {
+    this.app.get('/login/validate', (req, res, next) => {
+      userFactory().validate(req, res, next);
     });
   }
 
