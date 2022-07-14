@@ -4,10 +4,22 @@ import UserService from './services/userService';
 import UserRepository from './repositories/UserRepository';
 import HttpException from './exceptions/HttpException';
 
+import TeamController from './controllers/TeamController';
+import TeamService from './services/TeamService';
+import TeamRepository from './repositories/TeamRepository';
+
 const userFactory = () => {
   const repository = new UserRepository();
   const service = new UserService(repository);
   const controller = new UserController(service);
+
+  return controller;
+};
+
+const teamFactory = () => {
+  const repository = new TeamRepository();
+  const service = new TeamService(repository);
+  const controller = new TeamController(service);
 
   return controller;
 };
@@ -23,6 +35,10 @@ class App {
     this.login();
 
     this.validate();
+
+    this.getAllTeams();
+
+    this.getTeamById();
 
     this.errorHandler();
 
@@ -51,6 +67,18 @@ class App {
   private validate() {
     this.app.get('/login/validate', (req, res, next) => {
       userFactory().validate(req, res, next);
+    });
+  }
+
+  private getAllTeams() {
+    this.app.get('/teams', (req, res, next) => {
+      teamFactory().getAll(req, res, next);
+    });
+  }
+
+  private getTeamById() {
+    this.app.get('/teams/:id', (req, res, next) => {
+      teamFactory().getById(req, res, next);
     });
   }
 
