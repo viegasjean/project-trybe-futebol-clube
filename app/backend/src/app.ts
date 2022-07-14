@@ -8,6 +8,10 @@ import TeamController from './controllers/TeamController';
 import TeamService from './services/TeamService';
 import TeamRepository from './repositories/TeamRepository';
 
+import MatchController from './controllers/MatchController';
+import MatchService from './services/MatchService';
+import MatchRepository from './repositories/MatchRepository';
+
 const userFactory = () => {
   const repository = new UserRepository();
   const service = new UserService(repository);
@@ -20,6 +24,14 @@ const teamFactory = () => {
   const repository = new TeamRepository();
   const service = new TeamService(repository);
   const controller = new TeamController(service);
+
+  return controller;
+};
+
+const matchFactory = () => {
+  const repository = new MatchRepository();
+  const service = new MatchService(repository);
+  const controller = new MatchController(service);
 
   return controller;
 };
@@ -39,6 +51,8 @@ class App {
     this.getAllTeams();
 
     this.getTeamById();
+
+    this.getAllMatches();
 
     this.errorHandler();
 
@@ -79,6 +93,12 @@ class App {
   private getTeamById() {
     this.app.get('/teams/:id', (req, res, next) => {
       teamFactory().getById(req, res, next);
+    });
+  }
+
+  private getAllMatches() {
+    this.app.get('/matches', (req, res, next) => {
+      matchFactory().getAll(req, res, next);
     });
   }
 
