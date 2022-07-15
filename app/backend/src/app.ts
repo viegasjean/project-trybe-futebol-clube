@@ -54,6 +54,8 @@ class App {
 
     this.getAllMatches();
 
+    this.insertMatch();
+
     this.errorHandler();
 
     // Não remover essa rota
@@ -99,6 +101,12 @@ class App {
   private getAllMatches() {
     this.app.get('/matches', (req, res, next) => {
       matchFactory().getAll(req, res, next);
+    });
+  }
+
+  private insertMatch() {
+    this.app.post('/matches', (req, res, next) => {
+      matchFactory().add(req, res, next);
     });
   }
 

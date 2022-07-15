@@ -33,7 +33,7 @@ afterEach(async () => {
 });
 
 describe(getRequirement(23), () => {
-  it('Será validado que é possível salvar um jogo no banco de dados e ver o jogo na página de jogos', async () => {
+  it.only('Será validado que é possível salvar um jogo no banco de dados e ver o jogo na página de jogos', async () => {
     const dadosInsert = {
       homeTeam: teams[3].teamName,
       awayTeam: teams[8].teamName,

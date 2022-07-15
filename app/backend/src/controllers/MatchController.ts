@@ -16,4 +16,13 @@ export default class MatchController {
       next(error);
     }
   }
+
+  async add(req: Request, res: Response, next: NextFunction) {
+    try {
+      const match = await this.service.add(req.body)
+      return res.status(201).json(match);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

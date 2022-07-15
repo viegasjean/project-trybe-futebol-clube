@@ -12,6 +12,7 @@ export interface Match {
 
 export interface IMatchRepository {
   findAll(): Promise<Match[]>;
+  create(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>;
 }
 
 export default class MatchRepository implements IMatchRepository {
@@ -28,5 +29,10 @@ export default class MatchRepository implements IMatchRepository {
     });
 
     return entities as Match[];
+  }
+
+  async create(inputMatch: Omit<Match, 'inProgress'>): Promise<Match> {
+    const entity = await this.matchModel.create(inputMatch);
+    return entity;
   }
 }
