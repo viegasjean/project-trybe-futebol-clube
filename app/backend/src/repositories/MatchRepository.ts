@@ -13,6 +13,7 @@ export interface Match {
 export interface IMatchRepository {
   findAll(): Promise<Match[]>;
   create(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>;
+  update(id: string): Promise<number>
 }
 
 export default class MatchRepository implements IMatchRepository {
@@ -34,5 +35,10 @@ export default class MatchRepository implements IMatchRepository {
   async create(inputMatch: Omit<Match, 'inProgress'>): Promise<Match> {
     const entity = await this.matchModel.create(inputMatch);
     return entity;
+  }
+
+  async update(id: string): Promise<number> {
+    const [affectedRows] = await this.matchModel.update({inProgress: false}, { where: { id }})
+    return affectedRows
   }
 }
