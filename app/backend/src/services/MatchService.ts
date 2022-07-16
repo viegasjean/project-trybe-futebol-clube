@@ -1,4 +1,5 @@
 import { IMatchRepository, Match } from '../repositories/MatchRepository';
+import HttpException from '../exceptions/HttpException';
 
 export interface IMatchService {
   getAll(): Promise<Match[]>;
@@ -17,6 +18,7 @@ export default class MatchService implements IMatchService {
   }
 
   async add(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>{
+    if (inputMatch.awayTeam === inputMatch.homeTeam) throw new HttpException(401, 'It is not possible to create a match with two equal teams')
     const match = await this.matchRepository.create(inputMatch);
     return match;
   }
