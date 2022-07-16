@@ -1,5 +1,10 @@
 import { IMatchRepository, Match } from '../repositories/MatchRepository';
+import TeamRepository from '../repositories/TeamRepository';
 import HttpException from '../exceptions/HttpException';
+
+import * as jwt from 'jsonwebtoken';
+
+const secret = 'jwt_secret';
 
 export interface IMatchService {
   getAll(): Promise<Match[]>;
@@ -18,7 +23,16 @@ export default class MatchService implements IMatchService {
   }
 
   async add(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>{
-    if (inputMatch.awayTeam === inputMatch.homeTeam) throw new HttpException(401, 'It is not possible to create a match with two equal teams')
+    const { awayTeam, homeTeam } = inputMatch
+    if (awayTeam === homeTeam) throw new HttpException(401, 'It is not possible to create a match with two equal teams')
+
+    const teamRepository = new TeamRepository
+    if (
+      !await teamRepository.findOne(awayTeam.toString()) || !await teamRepository.findOne(homeTeam.toString())
+    ) {
+      throw new HttpException(404, 'There is no team with such id!')
+    }
+
     const match = await this.matchRepository.create(inputMatch);
     return match;
   }

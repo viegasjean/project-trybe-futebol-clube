@@ -12,6 +12,10 @@ import MatchController from './controllers/MatchController';
 import MatchService from './services/MatchService';
 import MatchRepository from './repositories/MatchRepository';
 
+import TokenMiddleware from './middlewares/TokenMiddleware';
+
+const tokenMiddleware = new TokenMiddleware();
+
 const userFactory = () => {
   const repository = new UserRepository();
   const service = new UserService(repository);
@@ -107,9 +111,10 @@ class App {
   }
 
   private insertMatch() {
-    this.app.post('/matches', (req, res, next) => {
-      matchFactory().add(req, res, next);
-    });
+    this.app.post('/matches',
+      tokenMiddleware.validate,
+      (req, res, next) => { matchFactory().add(req, res, next);}
+    );
   }
 
   private finishMatch() {
