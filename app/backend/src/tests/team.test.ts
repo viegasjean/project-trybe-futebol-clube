@@ -39,7 +39,7 @@ describe('Team', () => {
 
     it('Success request to GET /teams', async () => {
       chaiHttpResponse = await chai.request(app)
-        .post('/teams')
+        .get('/teams')
 
       expect(chaiHttpResponse.status).to.be.equal(200);
       // expect(chaiHttpResponse.body).to.have.property('token')
