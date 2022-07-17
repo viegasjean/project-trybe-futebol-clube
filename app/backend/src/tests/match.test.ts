@@ -8,6 +8,7 @@ import { app } from '../app';
 import Match from '../database/models/MatchModel';
 
 import { Response } from 'superagent';
+import { equal } from 'assert';
 
 chai.use(chaiHttp);
 
@@ -60,5 +61,46 @@ describe('Maches', () => {
       ])
     });
   })
+
+  describe('POST match', () => {
+    before(async () => {
+      sinon
+        .stub(Match, "create")
+        .resolves(
+          {
+            id: 1,
+            homeTeam: 16,
+            homeTeamGoals: 1,
+            awayTeam: 8,
+            awayTeamGoals: 1,
+            inProgress: false,
+          } as Match);
+    });
+
+    after(()=>{
+      (Match.create as sinon.SinonStub).restore();
+    })
+  })
+
+  it('Success request to POST /matches', async () => {
+    chaiHttpResponse = await chai.request(app)
+      .post('/matches')
+      .send({
+        homeTeam: 16,
+        awayTeam: 8,
+        homeTeamGoals: 2,
+        awayTeamGoals: 2
+      })
+
+    expect(chaiHttpResponse.status).to.be.equal(201);
+    expect(chaiHttpResponse.body).to.be.eql({
+        "id": 1,
+        "homeTeam": 16,
+        "homeTeamGoals": 1,
+        "awayTeam": 8,
+        "awayTeamGoals": 1,
+        "inProgress": false,
+      })
+  });
 
 })
