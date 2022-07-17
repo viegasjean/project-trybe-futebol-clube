@@ -36,4 +36,15 @@ export default class MatchController {
       next(error);
     }
   }
+
+  async updateGoals(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    try {
+      const ok = await this.service.updateGoals(id, homeTeamGoals, awayTeamGoals)
+      return res.status(200).json({ok})
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -13,7 +13,8 @@ export interface Match {
 export interface IMatchRepository {
   findAll(): Promise<Match[]>;
   create(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>;
-  update(id: string): Promise<number>
+  update(id: string): Promise<number>;
+  updateGoals(id: string, homeTeamGoals: string, awayTeamGoals: string): Promise<number>;
 }
 
 export default class MatchRepository implements IMatchRepository {
@@ -39,6 +40,17 @@ export default class MatchRepository implements IMatchRepository {
 
   async update(id: string): Promise<number> {
     const [affectedRows] = await this.matchModel.update({inProgress: false}, { where: { id }})
+    return affectedRows
+  }
+
+  async updateGoals(id: string, homeTeamGoals: string, awayTeamGoals: string): Promise<number> {
+    const [affectedRows] = await this.matchModel
+      .update({
+        homeTeamGoals: Number(homeTeamGoals),
+        awayTeamGoals: Number(awayTeamGoals)
+      }, {
+        where: { id }
+      })
     return affectedRows
   }
 }

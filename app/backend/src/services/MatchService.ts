@@ -10,6 +10,7 @@ export interface IMatchService {
   getAll(): Promise<Match[]>;
   add(inputMatch: Omit<Match, 'inProgress'>): Promise<Match>;
   finish(id: string): Promise<string>;
+  updateGoals(id: string, homeTeamGoals: string, awayTeamGoals: string): Promise<boolean>;
 }
 
 export default class MatchService implements IMatchService {
@@ -41,5 +42,11 @@ export default class MatchService implements IMatchService {
     const affectedRows = await this.matchRepository.update(id);
     if (affectedRows === 0) throw new Error('Team not found')
     return "Finished"
+  }
+
+  async updateGoals(id: string, homeTeamGoals: string, awayTeamGoals: string): Promise<boolean> {
+    const affectedRows = await this.matchRepository.updateGoals(id, homeTeamGoals, awayTeamGoals)
+    if (affectedRows === 0) throw new Error('Error in update')
+    return true
   }
 }

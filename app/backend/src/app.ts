@@ -60,6 +60,8 @@ class App {
 
     this.insertMatch();
 
+    this.updateMachGoals();
+
     this.finishMatch();
 
     this.errorHandler();
@@ -120,6 +122,12 @@ class App {
   private finishMatch() {
     this.app.patch('/matches/:id/finish', (req, res, next) => {
       matchFactory().finish(req, res, next);
+    });
+  }
+
+  private updateMachGoals() {
+    this.app.patch('/matches/:id', (req, res, next) => {
+      matchFactory().updateGoals(req, res, next);
     });
   }
 
