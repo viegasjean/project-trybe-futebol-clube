@@ -13,6 +13,8 @@ import MatchService from './services/MatchService';
 import MatchRepository from './repositories/MatchRepository';
 
 import TokenMiddleware from './middlewares/TokenMiddleware';
+import LeaderboardController from './controllers/leaderboardController';
+import LeaderboardService from './services/LeaderboardService';
 
 const tokenMiddleware = new TokenMiddleware();
 
@@ -40,6 +42,15 @@ const matchFactory = () => {
   return controller;
 };
 
+const leaderboardFactory = () => {
+  const matchRepository = new MatchRepository();
+  const teamRepository = new TeamRepository();
+  const service = new LeaderboardService(teamRepository, matchRepository);
+  const controller = new LeaderboardController(service);
+
+  return controller;
+};
+
 class App {
   public app: express.Express;
 
@@ -55,6 +66,8 @@ class App {
     this.getAllTeams();
 
     this.getTeamById();
+
+    this.leaderboardHome();
 
     this.getAllMatches();
 
@@ -103,6 +116,12 @@ class App {
   private getTeamById() {
     this.app.get('/teams/:id', (req, res, next) => {
       teamFactory().getById(req, res, next);
+    });
+  }
+
+  private leaderboardHome() {
+    this.app.get('/leaderboard/home', (req, res, next) => {
+      leaderboardFactory().leaderboardHome(req, res, next);
     });
   }
 

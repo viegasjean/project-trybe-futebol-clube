@@ -95,7 +95,7 @@ describe(getRequirement(24), () => {
 });
 
 describe(getRequirement(25), () => {
-  it.only('Será validado que não é possivel inserir uma partida com times iguais', async () => {
+  it('Será validado que não é possivel inserir uma partida com times iguais', async () => {
     const dadosInsert = {
       homeTeam: teams[3].teamName,
       awayTeam: teams[3].teamName,
