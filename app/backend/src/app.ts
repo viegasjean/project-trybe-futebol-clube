@@ -69,6 +69,8 @@ class App {
 
     this.leaderboardHome();
 
+    this.leaderboardAway();
+
     this.getAllMatches();
 
     this.insertMatch();
@@ -122,6 +124,12 @@ class App {
   private leaderboardHome() {
     this.app.get('/leaderboard/home', (req, res, next) => {
       leaderboardFactory().leaderboardHome(req, res, next);
+    });
+  }
+
+  private leaderboardAway() {
+    this.app.get('/leaderboard/away', (req, res, next) => {
+      leaderboardFactory().leaderboardAway(req, res, next);
     });
   }
 
