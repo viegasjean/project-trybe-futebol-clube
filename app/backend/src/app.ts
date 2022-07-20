@@ -67,6 +67,8 @@ class App {
 
     this.getTeamById();
 
+    this.leaderboard();
+
     this.leaderboardHome();
 
     this.leaderboardAway();
@@ -118,6 +120,12 @@ class App {
   private getTeamById() {
     this.app.get('/teams/:id', (req, res, next) => {
       teamFactory().getById(req, res, next);
+    });
+  }
+
+  private leaderboard() {
+    this.app.get('/leaderboard', (req, res, next) => {
+      leaderboardFactory().leaderboard(req, res, next);
     });
   }
 

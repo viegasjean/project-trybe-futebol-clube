@@ -25,4 +25,13 @@ export default class LeaderboardController {
       next(error);
     }
   }
+
+  async leaderboard(req: Request, res: Response, next: NextFunction) {
+    try {
+      const Leaderboards = await this.service.leaderboard();
+      return res.status(200).json(Leaderboards);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

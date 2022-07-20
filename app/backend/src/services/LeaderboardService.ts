@@ -17,6 +17,7 @@ interface leaderboard {
 export interface ILeaderboardService {
   leaderboardHome(): Promise<leaderboard[]>;
   leaderboardAway(): Promise<leaderboard[]>;
+  leaderboard(): Promise<leaderboard[]>;
 }
 
 export default class LeaderboardService implements ILeaderboardService {
@@ -48,7 +49,7 @@ export default class LeaderboardService implements ILeaderboardService {
         }
 
         match
-          .filter((match) => match.homeTeam === team.id )
+          .filter((match) => match.homeTeam === team.id)
           .filter((match) => match.inProgress === false)
           .forEach((match) => {
             teamStatistic.totalGames += 1
@@ -58,15 +59,14 @@ export default class LeaderboardService implements ILeaderboardService {
 
             if (match.homeTeamGoals > match.awayTeamGoals) {
               teamStatistic.totalPoints += 3
-              teamStatistic.totalVictories +=1
+              teamStatistic.totalVictories += 1
             }
 
             if (match.homeTeamGoals < match.awayTeamGoals) {
-              teamStatistic.totalLosses +=1
+              teamStatistic.totalLosses += 1
             }
 
             if (match.homeTeamGoals === match.awayTeamGoals) {
-              console.log({ team: team.teamName, homegoals: match.homeTeamGoals, awaygoals: match.awayTeamGoals})
               teamStatistic.totalPoints += 1
               teamStatistic.totalDraws += 1
             }
@@ -75,13 +75,13 @@ export default class LeaderboardService implements ILeaderboardService {
         teamStatistic.efficiency = (teamStatistic.totalPoints / (teamStatistic.totalGames * 3) * 100).toFixed(2)
 
         return teamStatistic
-    })
-    .sort((a, b) => (
-      b.totalPoints - a.totalPoints ||
-      b.totalVictories - a.totalVictories ||
-      b.goalsBalance - a.goalsBalance ||
-      b.goalsFavor - a.goalsFavor ||
-      b.goalsOwn - a.goalsOwn
+      })
+      .sort((a, b) => (
+        b.totalPoints - a.totalPoints ||
+        b.totalVictories - a.totalVictories ||
+        b.goalsBalance - a.goalsBalance ||
+        b.goalsFavor - a.goalsFavor ||
+        b.goalsOwn - a.goalsOwn
       ))
 
     return leaderboard;
@@ -107,7 +107,7 @@ export default class LeaderboardService implements ILeaderboardService {
         }
 
         match
-          .filter((match) => match.awayTeam === team.id )
+          .filter((match) => match.awayTeam === team.id)
           .filter((match) => match.inProgress === false)
           .forEach((match) => {
             teamStatistic.totalGames += 1
@@ -117,11 +117,11 @@ export default class LeaderboardService implements ILeaderboardService {
 
             if (match.awayTeamGoals > match.homeTeamGoals) {
               teamStatistic.totalPoints += 3
-              teamStatistic.totalVictories +=1
+              teamStatistic.totalVictories += 1
             }
 
             if (match.awayTeamGoals < match.homeTeamGoals) {
-              teamStatistic.totalLosses +=1
+              teamStatistic.totalLosses += 1
             }
 
             if (match.awayTeamGoals === match.homeTeamGoals) {
@@ -133,13 +133,99 @@ export default class LeaderboardService implements ILeaderboardService {
         teamStatistic.efficiency = (teamStatistic.totalPoints / (teamStatistic.totalGames * 3) * 100).toFixed(2)
 
         return teamStatistic
-    })
-    .sort((a, b) => (
-      b.totalPoints - a.totalPoints ||
-      b.totalVictories - a.totalVictories ||
-      b.goalsBalance - a.goalsBalance ||
-      b.goalsFavor - a.goalsFavor ||
-      b.goalsOwn - a.goalsOwn
+      })
+      .sort((a, b) => (
+        b.totalPoints - a.totalPoints ||
+        b.totalVictories - a.totalVictories ||
+        b.goalsBalance - a.goalsBalance ||
+        b.goalsFavor - a.goalsFavor ||
+        b.goalsOwn - a.goalsOwn
+      ))
+
+    return leaderboard;
+  }
+
+  async leaderboard(): Promise<leaderboard[]> {
+    const teams = await this.teamRepository.findAll();
+    const match = await this.matchRepository.findAll();
+
+    const leaderboard = teams
+      .map((team) => {
+        const teamStatistic = {
+          name: team.teamName,
+          totalPoints: 0,
+          totalGames: 0,
+          totalVictories: 0,
+          totalDraws: 0,
+          totalLosses: 0,
+          goalsFavor: 0,
+          goalsOwn: 0,
+          goalsBalance: 0,
+          efficiency: ''
+        }
+
+        match
+          .filter((match) => match.homeTeam === team.id)
+          .filter((match) => match.inProgress === false)
+          .forEach((match) => {
+            teamStatistic.totalGames += 1
+            teamStatistic.goalsFavor += match.homeTeamGoals
+            teamStatistic.goalsOwn += match.awayTeamGoals
+            teamStatistic.goalsBalance = teamStatistic.goalsFavor - teamStatistic.goalsOwn
+
+            if (match.homeTeamGoals > match.awayTeamGoals) {
+              teamStatistic.totalPoints += 3
+              teamStatistic.totalVictories += 1
+            }
+
+            if (match.homeTeamGoals < match.awayTeamGoals) {
+              teamStatistic.totalLosses += 1
+            }
+
+            if (match.homeTeamGoals === match.awayTeamGoals) {
+              teamStatistic.totalPoints += 1
+              teamStatistic.totalDraws += 1
+            }
+          })
+
+        match
+          .filter((match) => match.awayTeam === team.id)
+          .filter((match) => match.inProgress === false)
+          .forEach((match) => {
+            teamStatistic.totalGames += 1
+            teamStatistic.goalsFavor += match.awayTeamGoals
+            teamStatistic.goalsOwn += match.homeTeamGoals
+            teamStatistic.goalsBalance = teamStatistic.goalsFavor - teamStatistic.goalsOwn
+
+            if (match.awayTeamGoals > match.homeTeamGoals) {
+              teamStatistic.totalPoints += 3
+              teamStatistic.totalVictories += 1
+            }
+
+            if (match.awayTeamGoals < match.homeTeamGoals) {
+              teamStatistic.totalLosses += 1
+            }
+
+            if (match.awayTeamGoals === match.homeTeamGoals) {
+              teamStatistic.totalPoints += 1
+              teamStatistic.totalDraws += 1
+            }
+
+          })
+
+
+
+
+        teamStatistic.efficiency = (teamStatistic.totalPoints / (teamStatistic.totalGames * 3) * 100).toFixed(2)
+
+        return teamStatistic
+      })
+      .sort((a, b) => (
+        b.totalPoints - a.totalPoints ||
+        b.totalVictories - a.totalVictories ||
+        b.goalsBalance - a.goalsBalance ||
+        b.goalsFavor - a.goalsFavor ||
+        b.goalsOwn - a.goalsOwn
       ))
 
     return leaderboard;
